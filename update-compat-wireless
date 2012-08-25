@@ -79,7 +79,7 @@ for i in noflags p c; do
 	# Only test this once, and only for the most complex tarballs
 	if [[ $i = "noflags" ]]; then
 
-		cd ${COUTPUT_FILENAME_DATE_EXT}/
+		cd ${OUTPUT_FILENAME_DATE_EXT}/
 		${COMPAT_DIR}/bin/ckmake
 		if [[ $? -ne 0 ]]; then
 			cd $STAGING
@@ -97,13 +97,13 @@ for i in noflags p c; do
 		cp ${OUTPUT_FILENAME_DATE_EXT}/ckmake-report.log $DEST_DIR/reports/ckmake-report-${DATE}.log
 
 		cd $DEST_DIR
-		ln -s ckmake-${DATE}.log.bz2 ckmake.log.bz2
-		ln -s ckmake-report-${DATE}.log ckmake-report.log
+		ln -sf reports/ckmake-${DATE}.log.bz2 ckmake.log.bz2
+		ln -sf reports/ckmake-report-${DATE}.log ckmake-report.log
 	fi
 
 	mv -f $STAGING/${OUTPUT_FILENAME_DATE_EXT}.tar.bz2 $DEST_DIR
 
-	ln -sf ${OUTPUT_FILENAME_DATE_EXT}.tar.bz2 $OUTPUT_DIR/${OUTPUT_FILENAME_EXT}.tar.bz2
+	ln -sf ${YEAR}/${MONTH}/${OUTPUT_FILENAME_DATE_EXT}.tar.bz2 $OUTPUT_DIR/${OUTPUT_FILENAME_EXT}.tar.bz2
 
 	# The archiving is handled by archive-compat-wireless
 	# This run is just for the top level directory.
