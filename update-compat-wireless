@@ -1,37 +1,19 @@
 #!/bin/bash
-#set -e
+set -e
 
-WORKING_DIR=/home/hauke/compat-wireless/test/
-
-DATE=$(date -I)
-COMPAT="compat-drivers"
-COMPAT_DIR="${COMPAT}"
-
-COMPAT_DATE_DIR="${COMPAT}-${DATE}"
-ORIG_COMPAT_DATE_DIR="${COMPAT_DATE_DIR}"
-OUTPUT="${WORKING_DIR}/export/${COMPAT_DIR}/"
-
-COMPAT_DRIVERS_DIR="${WORKING_DIR}/compat-drivers"
-COMPAT_DRIVERS_REMOTE="github"
-
-COMPAT_DIR="${WORKING_DIR}/compat"
-COMPAT_REMOTE="github"
-
-LINUX_NEXT_DIR="${WORKING_DIR}/linux-next"
-LINUX_NEXT_REMOTE="linux-next"
-
-STAGING="/var/opt/compat/staging/"
+source "`dirname $0`/config.sh"
 
 FILE_POSTFIX=""
 FLAGS=""
 
-export GIT_COMPAT_TREE="${WORKING_DIR}/compat/"
-export GIT_TREE="$LINUX_NEXT"
+export GIT_COMPAT_TREE="$COMPAT_DIR"
+export GIT_TREE="$LINUX_NEXT_DIR"
 
 cd $WORKING_DIR || exit 2
 
 function update_git_tree {
 #	SRC="origin"
+	echo "Dir: $1"
 	cd "$1" || exit 2
 #	if [[ "$2" != "$LINUX_NEXT" ]]; then
 #		SRC="$SOURCE"
@@ -60,10 +42,10 @@ for i in noflags p c; do
 	fi
 	# NOTE: Although we have admin-refresh which does the two below
 	# we do these individually to catch errors.
-	rm -rf $COMPAT_DRIVERS_DIR
+	rm -rf $COMPAT_DRIVERS_DIR/*
 	rm -f .compat_*
 	git checkout -f
-	./scripts/admin-update.sh $FLAGS 2>&1 > /dev/null
+	./scripts/admin-update.sh $FLAGS # 2>&1 > /dev/null
 	RET=$?
 	if [ $RET -ne 0 ]; then
 		echo -en "Error while updating from linux-next"
@@ -81,6 +63,7 @@ for i in noflags p c; do
 	fi
 
 	cd ..
+	echo "mkdir -p $STAGING"
 	mkdir -p $STAGING
 	rm -rf $STAGING/${COMPAT_DATE_DIR}
 	cp -a $COMPAT_DIR $STAGING/${COMPAT_DATE_DIR}
@@ -94,10 +77,10 @@ for i in noflags p c; do
 	if [[ $i = "noflags" ]]; then
 
 		cd ${COMPAT_DATE_DIR}/
-		$HOME/compat/bin/ckmake
+		${COMPAT_DIR}/bin/ckmake
 		if [[ $? -ne 0 ]]; then
 			cd $STAGING
-			rm -rf *
+			rm -rf $STAGING/*
 			exit 1
 		fi
 
@@ -120,7 +103,7 @@ for i in noflags p c; do
 	cd $OUTPUT
 
 	if [[ $i = "noflags" ]]; then
-		ln -sf ${COMPAT_DATE_DIR}.tar.bz2 ${COMPAT_DIR}.tar.bz2
+		ln -sf ${COMPAT_DATE_DIR}.tar.bz2 ${COMPAT}.tar.bz2
 	fi
 
 	# The archiving is handled by archive-compat-wireless

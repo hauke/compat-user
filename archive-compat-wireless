@@ -5,32 +5,10 @@
 # Exit immediately if an error is encountered
 set -e
 
-# We know this is running through cron so we are sure we won't
-# have a race condition on the date ;)
-# That is -- don't schedule this at midnight!
-DATE=$(date -I)
-YEAR=$(date +%Y)
-MONTH=$(date +%m)
-
-COMPAT="compat-wireless"
-COMPAT_26="${COMPAT}-2.6"
-COMPAT_EXPORT="/export/kernel/"
-COMPAT_ARCHIVE="${COMPAT_EXPORT}/${COMPAT_26}/"
-COMPAT_DIR="${COMPAT_ARCHIVE}/"
-
-COMPAT_URL="http://wireless.kernel.org/download/${COMPAT_26}"
-COMPAT_TAR="${COMPAT}-${DATE}"
-ORIG_COMPAT_TAR="$COMPAT_TAR"
-COMPAT_TAR_URL="${COMPAT_URL}/${COMPAT_TAR}"
-COMPAT_TAR_URL_OLD="${COMPAT_URL}/${COMPAT_TAR_OLD}"
-COMPAT_SHA1="sha1sum.txt"
-COMPAT_SHA1_URL="${COMPAT_URL}/${COMPAT_SHA1}"
+source "`dirname $0`/config.sh"
 
 DEST_DIR="${COMPAT_ARCHIVE}/${YEAR}/${MONTH}"
 mkdir -p $DEST_DIR
-
-#wget -q ${COMPAT_TAR_URL} 2>&1 > /dev/null
-#wget -o /dev/null -O - ${COMPAT_SHA1_URL} >> $COMPAT_SHA1
 
 for i in noflags p c; do
         if [[ $i != "noflags" ]]; then
