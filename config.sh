@@ -10,12 +10,11 @@ DATE=$(date -I)
 YEAR=$(date +%Y)
 MONTH=$(date +%m)
 
-COMPAT="compat-drivers"
+OUTPUT_FILENAME="compat-drivers"
+OUTPUT_FILENAME_DATE="${OUTPUT_FILENAME}-${DATE}"
+OUTPUT_DIR="${WORKING_DIR}/export/"
 
-COMPAT_DATE_DIR="${COMPAT}-${DATE}"
-ORIG_COMPAT_DATE_DIR="${COMPAT_DATE_DIR}"
-OUTPUT="${WORKING_DIR}/export/${COMPAT_DIR}/"
-
+#git repos
 COMPAT_DRIVERS_DIR="${WORKING_DIR}/compat-drivers"
 COMPAT_DRIVERS_REMOTE="github"
 
@@ -25,6 +24,7 @@ COMPAT_REMOTE="github"
 LINUX_NEXT_DIR="${WORKING_DIR}/linux-next"
 LINUX_NEXT_REMOTE="linux-next"
 
+#tmp dir
 STAGING="${WORKING_DIR}/staging"
 
 COMPAT_EXPORT="/home/hauke/compat/test/export/"
