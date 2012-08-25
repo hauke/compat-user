@@ -96,9 +96,9 @@ for i in noflags p c; do
 		cp ${OUTPUT_FILENAME_DATE_EXT}/ckmake.log.bz2 $DEST_DIR/reports/ckmake-${DATE}.log.bz2
 		cp ${OUTPUT_FILENAME_DATE_EXT}/ckmake-report.log $DEST_DIR/reports/ckmake-report-${DATE}.log
 
-		cd $DEST_DIR
-		ln -sf reports/ckmake-${DATE}.log.bz2 ckmake.log.bz2
-		ln -sf reports/ckmake-report-${DATE}.log ckmake-report.log
+		cd $DEST_DIR/reports
+		ln -sf ckmake-${DATE}.log.bz2 ckmake.log.bz2
+		ln -sf ckmake-report-${DATE}.log ckmake-report.log
 	fi
 
 	mv -f $STAGING/${OUTPUT_FILENAME_DATE_EXT}.tar.bz2 $DEST_DIR
@@ -107,7 +107,7 @@ for i in noflags p c; do
 
 	# The archiving is handled by archive-compat-wireless
 	# This run is just for the top level directory.
-	sha1sum $STAGING/*.tar.bz2 > sha1sums.txt
+	sha1sum $DEST_DIR/*.tar.bz2 > sha1sums.txt
 
 	chmod 755 $DEST_DIR/*
 done

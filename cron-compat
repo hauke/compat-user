@@ -1,9 +1,11 @@
 #!/bin/bash
 
-./update-compat-wireless  | ./skip-colors
-./archive-compat-wireless 2>&1 > /dev/null
+source "`dirname $0`/config.sh"
 
-cat compat-wireless-2.6/code-metrics.txt | ./skip-colors
+./update-compat-wireless  | ./skip-colors
+#./archive-compat-wireless 2>&1 > /dev/null
+
+cat ${COMPAT_DRIVERS_DIR}/code-metrics.txt | ./skip-colors
 
 #rsync -vl /export/kernel/compat-wireless-2.6/* wireless@wireless.kernel.org:www/download/compat-wireless-2.6/ 2>&1 > /dev/null
 #rsync -vl /export/kernel/compat-wireless-2.6/* wireless@linuxwireless.org:www/download/compat-wireless-2.6/ 2>&1 > /dev/null
