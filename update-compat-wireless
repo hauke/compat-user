@@ -47,7 +47,7 @@ update_git_tree $COMPAT_DIR $COMPAT_REMOTE
 update_git_tree $LINUX_NEXT_DIR $LINUX_NEXT_REMOTE
 
 for i in noflags p c; do
-	cd $COMPAT_DRIVERS_TREE
+	cd $COMPAT_DRIVERS_DIR
 
 	if [[ $i != "noflags" ]]; then
 		FLAGS="$FLAGS -${i}"
@@ -60,7 +60,7 @@ for i in noflags p c; do
 	fi
 	# NOTE: Although we have admin-refresh which does the two below
 	# we do these individually to catch errors.
-	rm -rf *
+	rm -rf $COMPAT_DRIVERS_DIR
 	rm -f .compat_*
 	git checkout -f
 	./scripts/admin-update.sh $FLAGS 2>&1 > /dev/null
