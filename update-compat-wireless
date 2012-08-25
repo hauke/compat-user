@@ -1,50 +1,53 @@
 #!/bin/bash
 #set -e
 
-# Set this empty and it will use kernel.org,
-# as that is the origin
-SOURCE="github"
+WORKING_DIR=/home/hauke/compat-wireless/test/
 
 DATE=$(date -I)
-COMPAT="compat-wireless"
+COMPAT="compat-drivers"
 COMPAT_DIR="${COMPAT}"
 
 COMPAT_DATE_DIR="${COMPAT}-${DATE}"
 ORIG_COMPAT_DATE_DIR="${COMPAT_DATE_DIR}"
-OUTPUT="/export/kernel/$COMPAT_DIR/"
+OUTPUT="${WORKING_DIR}/export/${COMPAT_DIR}/"
 
-COMPAT_WIRELESS_TREE="$HOME/compat-wireless-2.6"
-LINUX_NEXT="$HOME/linux-next/"
+COMPAT_DRIVERS_DIR="${WORKING_DIR}/compat-drivers"
+COMPAT_DRIVERS_REMOTE="github"
+
+COMPAT_DIR="${WORKING_DIR}/compat"
+COMPAT_REMOTE="github"
+
+LINUX_NEXT_DIR="${WORKING_DIR}/linux-next"
+LINUX_NEXT_REMOTE="linux-next"
 
 STAGING="/var/opt/compat/staging/"
 
 FILE_POSTFIX=""
 FLAGS=""
 
-export GIT_COMPAT_TREE="$HOME/compat/"
+export GIT_COMPAT_TREE="${WORKING_DIR}/compat/"
 export GIT_TREE="$LINUX_NEXT"
 
-cd $HOME || exit 2
+cd $WORKING_DIR || exit 2
 
 function update_git_tree {
-	SRC=""
+#	SRC="origin"
 	cd "$1" || exit 2
-	if [[ "$1" != "$LINUX_NEXT" ]]; then
-		SRC="$SOURCE"
-	fi
-	echo "git fetch $SRC ($PWD)"
-	git fetch $SRC
+#	if [[ "$2" != "$LINUX_NEXT" ]]; then
+#		SRC="$SOURCE"
+#	fi
+	echo "git fetch $2 ($PWD)"
+	git fetch $2
 	git repack -d
-	git reset --hard origin/master
+	git reset --hard $2/master
 }
 
-for i in $COMPAT_WIRELESS_TREE $GIT_COMPAT_TREE $LINUX_NEXT; do
-	update_git_tree $i
-	echo > /dev/null
-done
+update_git_tree $COMPAT_DRIVERS_DIR $COMPAT_DRIVERS_REMOTE
+update_git_tree $COMPAT_DIR $COMPAT_REMOTE
+update_git_tree $LINUX_NEXT_DIR $LINUX_NEXT_REMOTE
 
 for i in noflags p c; do
-	cd $COMPAT_WIRELESS_TREE
+	cd $COMPAT_DRIVERS_TREE
 
 	if [[ $i != "noflags" ]]; then
 		FLAGS="$FLAGS -${i}"
@@ -63,7 +66,7 @@ for i in noflags p c; do
 	./scripts/admin-update.sh $FLAGS 2>&1 > /dev/null
 	RET=$?
 	if [ $RET -ne 0 ]; then
-		echo -en "Error while updating from wireless-testing"
+		echo -en "Error while updating from linux-next"
 		if [[ $i = "noflags" ]]; then
 			echo -en "\n"
 		else
